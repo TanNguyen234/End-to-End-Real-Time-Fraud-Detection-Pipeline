@@ -1,6 +1,5 @@
 """Shared pytest fixtures available to all test modules."""
 import pytest
-import numpy as np
 from unittest.mock import MagicMock
 
 from app.models.schema import FraudPredictionRequest

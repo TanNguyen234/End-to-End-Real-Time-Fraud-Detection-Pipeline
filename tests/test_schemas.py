@@ -6,8 +6,6 @@ from app.models.schema import (
     FraudPredictionRequest,
     BatchFraudPredictionRequest,
     FraudPredictionResult,
-    FraudPredictionResponse,
-    BatchFraudPredictionResponse,
     HealthResponse,
 )
 

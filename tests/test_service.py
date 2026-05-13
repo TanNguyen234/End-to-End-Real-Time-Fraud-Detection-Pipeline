@@ -1,7 +1,7 @@
 """Unit tests for ModelService – preprocessing and prediction logic."""
 import numpy as np
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 from app.models.schema import FraudPredictionRequest
 from app.services.model_service import ModelService
