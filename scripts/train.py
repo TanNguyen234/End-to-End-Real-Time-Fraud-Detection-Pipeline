@@ -5,6 +5,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import RobustScaler
 import joblib
 import logging
+from sklearn.metrics import classification_report, average_precision_score
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -83,9 +84,9 @@ def main():
     # Evaluate briefly
     train_score = model.score(X_train, y_train)
     test_score = model.score(X_test, y_test)
-    logger.info(f"Train Accuracy: {train_score:.4f}")
-    logger.info(f"Test Accuracy: {test_score:.4f}")
-    
+    logger.info("\n" + classification_report(y_test, y_pred))
+    pr_auc = average_precision_score(y_test, y_pred_proba)
+    logger.info(f"PR-AUC Score: {pr_auc:.4f}")
     # Save artifacts
     if not os.path.exists(models_dir):
         os.makedirs(models_dir)
