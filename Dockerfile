@@ -10,7 +10,7 @@ WORKDIR /app
 
 # Install system dependencies
 # libgomp1 is required for XGBoost
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-packages-recommends \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
     libgomp1 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
