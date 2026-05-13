@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.venv/
+venv/
+ENV/
+env/
+.agents/
+# Environment
+.env
+
+# Data and Models
+data/*.csv
+models/*.json
+models/*.joblib
+
+# OS
+.DS_Store
+Thumbs.db
