@@ -84,6 +84,12 @@ def main():
     # Evaluate briefly
     train_score = model.score(X_train, y_train)
     test_score = model.score(X_test, y_test)
+    logger.info(f"Train Accuracy: {train_score:.4f}")
+    logger.info(f"Test Accuracy: {test_score:.4f}")
+
+    y_pred = model.predict(X_test)
+    y_pred_proba = model.predict_proba(X_test)[:, 1]
+    
     logger.info("\n" + classification_report(y_test, y_pred))
     pr_auc = average_precision_score(y_test, y_pred_proba)
     logger.info(f"PR-AUC Score: {pr_auc:.4f}")
