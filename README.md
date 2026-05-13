@@ -18,6 +18,32 @@ Interactive docs (Swagger UI) → `http://localhost:8000/docs`
 
 ---
 
+## Exploratory Data Analysis (EDA)
+
+Below are some key insights from the dataset analysis:
+
+### 1. Class Distribution
+The dataset is highly imbalanced, with only **473** fraud cases out of **284,807** transactions (~0.17%).
+
+![Class Distribution](assets/class_distribution.png)
+
+### 2. Transaction Amount vs Class
+Fraudulent transactions often have different amount distributions compared to legitimate ones.
+
+![Amount Distribution](assets/amount_distribution.png)
+
+### 3. Transaction Density by Hour
+Analysis of transaction frequency over a 24-hour cycle.
+
+![Time Distribution](assets/time_distribution.png)
+
+### 4. Key Feature Separability
+Features like `V14` and `V17` show significant differences in distribution between fraud and normal classes, making them strong predictors.
+
+![Feature Distributions](assets/feature_distributions.png)
+
+---
+
 ## Project Structure
 
 ```
@@ -35,7 +61,8 @@ Fraud-Classification-System/
 │   └── main.py                  # FastAPI app factory + global error handlers
 ├── scripts/
 │   ├── train.py                 # Training pipeline
-│   └── setup_models.py          # Auto-download models from Google Drive
+│   ├── setup_models.py          # Auto-download models from Google Drive
+│   └── generate_eda_plots.py    # Generate EDA plots for documentation
 ├── models/                      # Saved artifacts (gitignored)
 ├── data/                        # Raw CSV data (gitignored)
 ├── tests/
