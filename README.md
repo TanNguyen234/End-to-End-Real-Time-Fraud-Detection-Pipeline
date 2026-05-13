@@ -34,14 +34,16 @@ Fraud-Classification-System/
 │   │   └── model_service.py     # Preprocessing + inference
 │   └── main.py                  # FastAPI app factory + global error handlers
 ├── scripts/
-│   └── train.py                 # Training pipeline
+│   ├── train.py                 # Training pipeline
+│   └── setup_models.py          # Auto-download models from Google Drive
 ├── models/                      # Saved artifacts (gitignored)
 ├── data/                        # Raw CSV data (gitignored)
 ├── tests/
 │   ├── conftest.py              # Shared fixtures
-│   ├── test_api.py              # Integration tests (40+ cases)
+│   ├── test_api.py              # Integration tests
 │   ├── test_service.py          # Unit tests – ModelService
 │   └── test_schemas.py          # Unit tests – Pydantic schemas
+├── Dockerfile                   # Docker image definition
 ├── requirements.txt
 └── .env
 ```
@@ -55,19 +57,34 @@ Fraud-Classification-System/
 pip install -r requirements.txt
 ```
 
-### 2. Prepare data
-Place the `creditcard.csv` file in the `data/` directory.
+### 2. Prepare Models
+The models are stored in Google Drive to keep the repository lightweight. You can download them automatically:
+```bash
+python scripts/setup_models.py
+```
+Alternatively, the Docker build and CI/CD pipeline handle this automatically.
 
-### 3. Train the model
+### 3. Prepare Data (Optional)
+If you want to retrain the model, place the `creditcard.csv` file in the `data/` directory and run:
 ```bash
 python scripts/train.py
 ```
-Artifacts are saved to `models/`: `fraud_model.json`, `scaler.joblib`, `features.json`.
 
 ### 4. Start the server
 ```bash
 uvicorn app.main:app --reload
 ```
+
+---
+
+## Docker Support
+
+Build and run the application using Docker:
+```bash
+docker build -t fraud-detection-api .
+docker run -p 8000:8000 fraud-detection-api
+```
+The Docker image automatically downloads the latest model artifacts during the build process.
 
 ---
 
@@ -84,11 +101,6 @@ Returns model readiness.
   "version": "1.0.0"
 }
 ```
-
-| Field | Values |
-|-------|--------|
-| `status` | `"ok"` or `"degraded"` |
-| `model_loaded` | `true` / `false` |
 
 ---
 
@@ -113,13 +125,6 @@ Classify a single transaction.
 }
 ```
 
-**Errors:**
-
-| Status | Code | When |
-|--------|------|------|
-| `422` | `validation_error` | Missing / invalid field |
-| `503` | `model_unavailable` | Model not trained yet |
-
 ---
 
 ### `POST /api/v1/predictions/batch`
@@ -136,21 +141,6 @@ Classify 1–100 transactions in one call.
 }
 ```
 
-**Response `200 OK`:**
-```json
-{
-  "data": [
-    { "is_fraud": false, "probability": 0.02, "model_version": "xgboost-v1" },
-    { "is_fraud": true,  "probability": 0.94, "model_version": "xgboost-v1" }
-  ],
-  "meta": {
-    "total": 2,
-    "fraud_count": 1,
-    "legitimate_count": 1
-  }
-}
-```
-
 ---
 
 ## Running Tests
@@ -159,21 +149,11 @@ Classify 1–100 transactions in one call.
 pytest tests/ -v
 ```
 
-**71 tests** across three modules:
-
-| Module | Focus |
-|--------|-------|
-| `test_schemas.py` | Pydantic validation rules |
-| `test_service.py` | Preprocessing + inference logic |
-| `test_api.py` | HTTP endpoints (happy path, 422, 503) |
-
 ---
 
-## Environment Variables (`.env`)
+## CI/CD Pipeline
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `MODEL_PATH` | `models/fraud_model.json` | XGBoost model |
-| `SCALER_PATH` | `models/scaler.joblib` | RobustScaler artifact |
-| `FEATURES_PATH` | `models/features.json` | Feature column order |
-| `DATA_PATH` | `data/creditcard.csv` | Training data |
+The project includes a GitHub Actions pipeline (`.github/workflows/ci-cd.yml`) that:
+1. Lints code with Ruff.
+2. Downloads models and runs tests.
+3. Builds and pushes a Docker image to Docker Hub on every push to `main`.

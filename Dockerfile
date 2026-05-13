@@ -21,6 +21,10 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # Copy project
 COPY . .
 
+# Download models from Google Drive
+# This ensures models are baked into the image even if not in Git
+RUN python scripts/setup_models.py
+
 # Expose the port the app runs on
 EXPOSE 8000
 
