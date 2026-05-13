@@ -9,8 +9,10 @@ ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
 # Install system dependencies
+# libgomp1 is required for XGBoost
 RUN apt-get update && apt-get install -y --no-install-packages-recommends \
-    build-essential \
+    libgomp1 \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies
